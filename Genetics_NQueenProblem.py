@@ -30,6 +30,32 @@ def check(individual):
     print(collisions)
     return collisions
 
+
+def mutate():
+
+    mutation = 0.02
+    for i in range (int(population_size * mutation)):
+        individual = population[randint(0, population_size)]  #choose a random individual
+        individual[randint(0,7)] = randint(0,7) #change a random gen
+
+
+def tournament_selection():
+
+    cant_selection = 15  #number of individuals to selectionate
+    random_selection = random.sample(list(enumerate(fitness)),cant_selection)
+    best_fitness = min(random_selection, key = lambda t: t[1]) #minimun fitness on the sample, tuple = (index, fitness)
+    best_individual = population[best_fitness[0]]
+    return best_individual
+
+
+def crossover(father, mother):
+
+    pos = randint(1,7)
+    child_one = father[:pos]+mother[pos:]
+    child_two = mother[:pos]+father[pos:]
+    return (child_one, child_two)
+
+
 def main():
 
     
