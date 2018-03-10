@@ -176,11 +176,7 @@ def main():
         print("Number of individuals: " + str(population_size))
         print("Number of generations executed: " + str(limit_gens))
         print("Mutation percent: " + str(mutation_percent))
-    
-    
 
-    print('\033[31m' + 'some red text')
-    print('\033[30m') # and reset to default color
 
 if __name__ == "__main__":
     main()
