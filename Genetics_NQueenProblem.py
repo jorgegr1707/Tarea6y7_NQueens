@@ -1,8 +1,9 @@
 import random
 
-population_size = 100
+population_size = 200
 mutation_percent = 0.02
 limit_gens = 500
+eliticism = 0
 population = []
 offsprings = []
 fitness = []
@@ -80,7 +81,8 @@ def elitism():
     best = sorted(list_index_fitness, key = lambda t: t[1])
     best = best[:cant_selected]
     for i in best:
-        add_individual(population[i[0]],0)
+        add_individual(population[i[0]],1)
+    
     
     
 
@@ -98,12 +100,18 @@ def create_new_population():
     global offsprings
     global fitness
     global fitness_new
-    for i in range(population_size - cant_selected):
-        best_1 = tournament_selection()
-        best_2 = tournament_selection()
-        crossover(best_1,best_2)
-    elitism()
-    print(fitness_new)
+    if (eliticism == 1): 
+        for i in range(int((population_size - cant_selected)/2)):
+            best_1 = tournament_selection()
+            best_2 = tournament_selection()
+            crossover(best_1,best_2)
+        elitism()
+    else: 
+        for i in range(int(population_size/2)):
+            best_1 = tournament_selection()
+            best_2 = tournament_selection()
+            crossover(best_1,best_2)
+        
     #print(offsprings)
     #print(population)
     #print(offsprings)
@@ -115,19 +123,65 @@ def create_new_population():
     fitness_new = [] 
     
     
+   
+def get_matrix_solution(solution): 
+    matrix = []
+    len_sol = len(solution)
+    for i in range(len_sol): 
+        row = []
+        for j in range(len_sol): #row
+            if (j != solution[i]):
+                row.append(0)
+            else: 
+                row.append(1)
+        matrix.append(row)
+    return matrix
     
+def print_solution(solution):
+    matrix_solution = get_matrix_solution(solution)
+    matrix_cont = 0 
+    for i in range(0,17): #para futuro deberia ser solution * 2 - 1
+        if (i == 0): 
+            print("+ - + - + - + - + - + - + - + - +")
+        elif (i%2 != 0):
+           answer = "|" 
+           row = matrix_solution[matrix_cont]
+           for j in range(len(solution)):
+               answer +=" " + str(row[j]) + " |"
+           matrix_cont += 1 
+           print(answer)
+        elif (i%2 == 0): 
+           print("+ - + - + - + - + - + - + - + - +")
+             
+           
+            
 def main():
+    solution = 0 
     generate_population()
     for i in range(limit_gens): 
         create_new_population()
         if 0 in fitness:
-            print("Finish")
+            print("There IS a solution in the population. \nStats:")
+            print("Number of individuals: " + str(population_size))
+            print("Number of generations executed: " + str(i) + " of " + str(limit_gens))
+            print("Mutation percent: " + str(mutation_percent))
+            index = fitness.index(0)
+            print("Short answer: " + str(population[index]))
+            print("\nLong answer: \n1: queens\n0: blank space")
+            print_solution(population[index])
+            solution = 1
             break
-    index = fitness.index(0)
-    print(population[index])
+    if(solution == 0): 
+        print("There was no solution in the final population.")
+        print("Number of individuals: " + str(population_size))
+        print("Number of generations executed: " + str(limit_gens))
+        print("Mutation percent: " + str(mutation_percent))
+    
     
 
-    
+    print('\033[31m' + 'some red text')
+    print('\033[30m') # and reset to default color
 
 if __name__ == "__main__":
     main()
+    
